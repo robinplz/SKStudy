@@ -32,7 +32,14 @@ class GameScene: SKScene {
             
             spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(M_PI), duration: 1)))
             spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
+                                              SKAction.group([
+                                                SKAction.scale(by: 2.0, duration: 1.5),
+                                                SKAction.customAction(withDuration: 1.5, actionBlock: { (node, elapsedTime) in
+                                                    let node_ = node as! SKShapeNode
+                                                    node_.lineWidth = 2.5 * (1.0 + 4.0 * elapsedTime/1.5)
+                                                }),
+                                                SKAction.fadeOut(withDuration: 1.5)
+                                              ]),
                                               SKAction.removeFromParent()]))
         }
     }
@@ -71,11 +78,11 @@ class GameScene: SKScene {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
