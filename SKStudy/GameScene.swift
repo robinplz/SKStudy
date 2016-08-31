@@ -12,6 +12,7 @@ import GameplayKit
 class GameScene: SKScene {
     
     private var label : SKLabelNode?
+    private var button : SKButton?
     private var spinnyNode : SKShapeNode?
     
     override func didMove(to view: SKView) {
@@ -21,6 +22,12 @@ class GameScene: SKScene {
         if let label = self.label {
             label.alpha = 0.0
             label.run(SKAction.fadeIn(withDuration: 2.0))
+        }
+        
+        self.button = SKButton(defaultImage: "buttonDefault", activeImage: "buttonActive", buttonAction: self.buttonTapped)
+        self.button?.position = CGPoint.init(x: 0.5, y: 0.5)
+        if let button = self.button {
+            self.addChild(button)
         }
         
         // Create shape node to use during mouse interaction
@@ -42,6 +49,9 @@ class GameScene: SKScene {
                                               ]),
                                               SKAction.removeFromParent()]))
         }
+        
+        // add a gaussian blur filte
+        self.filter = CIFilter(name: "CIGaussianBlur", withInputParameters: ["inputRadius" : 10.0])
     }
     
     
@@ -67,6 +77,10 @@ class GameScene: SKScene {
             n.strokeColor = SKColor.red
             self.addChild(n)
         }
+    }
+    
+    func buttonTapped(_ sender : SKButton) {
+        self.shouldEnableEffects = !self.shouldEnableEffects
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
